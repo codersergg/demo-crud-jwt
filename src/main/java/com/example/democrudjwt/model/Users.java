@@ -25,7 +25,7 @@ import java.io.Serializable;
                         columnNames = "email")
         }
 )
-public class User implements Serializable, Persistable<Long> {
+public class Users implements Serializable, Persistable<Long> {
 
     @SequenceGenerator(
             name = "users_id_sequence",
@@ -62,6 +62,12 @@ public class User implements Serializable, Persistable<Long> {
     )
     private String email;
 
+    public Users(String name, Integer age, String email) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+    }
+
     public Long id() {
         Assert.notNull(id, "Entity must have id");
         return id;
@@ -81,7 +87,7 @@ public class User implements Serializable, Persistable<Long> {
         if (o == null || !getClass().equals(ProxyUtils.getUserClass(o))) {
             return false;
         }
-        User that = (User) o;
+        Users that = (Users) o;
         return id != null && id.equals(that.id);
     }
 

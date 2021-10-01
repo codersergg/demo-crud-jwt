@@ -46,12 +46,13 @@ public class Profiles implements Serializable, Persistable<Long> {
             fetch = FetchType.LAZY)
     @JoinColumn(
             name = "users_email",
+            nullable = false,
             referencedColumnName = "id",
             foreignKey = @ForeignKey(
                     name = "profiles_users_id_fk"
             )
     )
-    private User usersEmail;
+    private Users usersEmail;
 
     @JsonIgnore
     @Override

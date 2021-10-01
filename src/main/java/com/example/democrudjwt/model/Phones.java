@@ -56,7 +56,7 @@ public class Phones implements Serializable, Persistable<Long> {
                     name = "phones_users_id_fk"
             )
     )
-    private User usersEmail;
+    private Users usersEmail;
 
     @JsonIgnore
     @Override
