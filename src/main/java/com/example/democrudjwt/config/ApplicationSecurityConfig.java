@@ -1,9 +1,8 @@
 package com.example.democrudjwt.config;
 
-import com.example.democrudjwt.servise.UsersService;
-import com.example.democrudjwt.config.JwtConfig;
 import com.example.democrudjwt.jwt.JwtTokenVerifier;
 import com.example.democrudjwt.jwt.JwtUsernameAndPasswordAuthenticationFilter;
+import com.example.democrudjwt.servise.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -11,6 +11,9 @@ import com.example.democrudjwt.util.IncreaseCash;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -48,6 +51,7 @@ public class UsersService implements UserDetailsService {
         this.profilesService = profilesService;
     }
 
+    @Cacheable("users")
     public Page<UsersDTO> findAll(PageRequest pageRequest) {
         log.info("findAll");
         Page<Users> pageResponse = Optional.of(usersRepository.findAll(pageRequest))
@@ -58,6 +62,7 @@ public class UsersService implements UserDetailsService {
                 .collect(Collectors.toList()));
     }
 
+    @Cacheable("users")
     public List<UsersDTO> getAllUsers() {
         log.info("getAllUsers");
         List<Users> usersList = Optional.of(usersRepository.getAllUsers())
@@ -77,6 +82,7 @@ public class UsersService implements UserDetailsService {
 
     @Modifying
     @Transactional
+    @CacheEvict(value = "users")
     public void deleteAuthUsers(Long idUser) {
         log.info("deleteAuthUsers");
         assert idUser != null;
@@ -85,6 +91,7 @@ public class UsersService implements UserDetailsService {
 
     @Modifying
     @Transactional
+    @CachePut(value = "users")
     public Users register(Users user) {
         log.info("register");
         String userName = user.getName();
@@ -109,6 +116,7 @@ public class UsersService implements UserDetailsService {
 
     @Modifying
     @Transactional
+    @CachePut(value = "users")
     public Users updateUser(Users user) {
         log.info("updateUser");
         Users foundAuthUser = getUserByEmailIgnoreCase().orElseThrow(

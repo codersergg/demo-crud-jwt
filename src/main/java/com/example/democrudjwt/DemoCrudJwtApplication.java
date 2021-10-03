@@ -3,7 +3,6 @@ package com.example.democrudjwt;
 import com.example.democrudjwt.model.Phones;
 import com.example.democrudjwt.model.Profiles;
 import com.example.democrudjwt.model.Users;
-import com.example.democrudjwt.repository.ProfilesRepository;
 import com.example.democrudjwt.repository.UsersRepository;
 import com.example.democrudjwt.servise.UsersService;
 import com.github.javafaker.Faker;
