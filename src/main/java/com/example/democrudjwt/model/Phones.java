@@ -56,7 +56,13 @@ public class Phones implements Serializable, Persistable<Long> {
                     name = "phones_users_id_fk"
             )
     )
+    @JsonIgnore
     private Users usersEmail;
+
+    public Phones(String values, Users usersEmail) {
+        this.values = values;
+        this.usersEmail = usersEmail;
+    }
 
     @JsonIgnore
     @Override

@@ -27,7 +27,7 @@ public class FakePasswordApplicationUserDaoService implements ApplicationUserDao
         Users users = usersRepository.findByEmailIgnoreCase(email).get();
 
         ApplicationUser applicationUser = new ApplicationUser(
-                users.getName(),
+                users.getEmail(),
                 passwordEncoder.encode("password"),
                 AUTHUSER.getGrantedAuthorities(),
                 true,

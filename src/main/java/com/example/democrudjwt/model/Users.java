@@ -11,6 +11,8 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -62,10 +64,34 @@ public class Users implements Serializable, Persistable<Long> {
     )
     private String email;
 
+    @OneToOne(
+            mappedBy = "usersEmail",
+            orphanRemoval = true,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            fetch = FetchType.LAZY
+    )
+    private Profiles profiles;
+
+    @OneToMany(
+            mappedBy = "usersEmail",
+            orphanRemoval = true,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            fetch = FetchType.LAZY
+    )
+    private List<Phones> phonesList = new ArrayList<>();
+
     public Users(String name, Integer age, String email) {
         this.name = name;
         this.age = age;
         this.email = email;
+    }
+
+    public Users(String name, Integer age, String email, Profiles profiles, List<Phones> phonesList) {
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.profiles = profiles;
+        this.phonesList = phonesList;
     }
 
     public Long id() {

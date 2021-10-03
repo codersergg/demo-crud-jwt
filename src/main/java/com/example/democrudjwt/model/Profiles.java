@@ -52,7 +52,13 @@ public class Profiles implements Serializable, Persistable<Long> {
                     name = "profiles_users_id_fk"
             )
     )
+    @JsonIgnore
     private Users usersEmail;
+
+    public Profiles(BigDecimal cash, Users usersEmail) {
+        this.cash = cash;
+        this.usersEmail = usersEmail;
+    }
 
     @JsonIgnore
     @Override
