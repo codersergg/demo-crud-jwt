@@ -1,4 +1,4 @@
-package com.example.democrudjwt.jwt;
+package com.example.democrudjwt.config;
 
 import com.google.common.net.HttpHeaders;
 import org.springframework.boot.context.properties.ConfigurationProperties;

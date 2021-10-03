@@ -1,7 +1,7 @@
-package com.example.democrudjwt.security;
+package com.example.democrudjwt.config;
 
 import com.example.democrudjwt.servise.UsersService;
-import com.example.democrudjwt.jwt.JwtConfig;
+import com.example.democrudjwt.config.JwtConfig;
 import com.example.democrudjwt.jwt.JwtTokenVerifier;
 import com.example.democrudjwt.jwt.JwtUsernameAndPasswordAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/", "index", "/css/*", "/js/*", "/api/v1/user/register").permitAll()
+                .antMatchers("/", "index", "/css/*", "/js/*", "/api/v1/user/register", "/v3/api-docs/**").permitAll()
                 //.antMatchers("/api/user/register").anonymous()
                 .antMatchers("/api/**").hasRole(AUTHUSER.name())
                 .anyRequest()

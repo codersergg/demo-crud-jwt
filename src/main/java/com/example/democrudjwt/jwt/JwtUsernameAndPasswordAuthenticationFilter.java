@@ -1,5 +1,6 @@
 package com.example.democrudjwt.jwt;
 
+import com.example.democrudjwt.config.JwtConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;

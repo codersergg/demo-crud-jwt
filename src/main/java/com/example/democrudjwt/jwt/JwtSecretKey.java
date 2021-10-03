@@ -1,5 +1,6 @@
 package com.example.democrudjwt.jwt;
 
+import com.example.democrudjwt.config.JwtConfig;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
