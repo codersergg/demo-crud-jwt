@@ -1,6 +1,7 @@
 package com.example.democrudjwt.controller;
 
 import com.example.democrudjwt.dto.UsersDTO;
+import com.example.democrudjwt.exception.IllegalRequestDataException;
 import com.example.democrudjwt.model.Users;
 import com.example.democrudjwt.servise.UsersService;
 import com.google.common.net.HttpHeaders;
@@ -69,7 +70,10 @@ public class UsersController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser() {
         log.info("deleteUser by id=");
-        usersService.deleteById();
+        Users foundAuthUser = usersService.getUserByEmailIgnoreCase().orElseThrow(
+                () -> new IllegalRequestDataException("No user found"));
+        Long idUser = foundAuthUser.getId();
+        usersService.deleteAuthUsers(idUser);
     }
 
     @PostMapping(

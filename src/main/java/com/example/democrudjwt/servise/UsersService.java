@@ -77,11 +77,8 @@ public class UsersService implements UserDetailsService {
 
     @Modifying
     @Transactional
-    public void deleteById() {
-        log.info("deleteById");
-        Users foundAuthUser = getUserByEmailIgnoreCase().orElseThrow(
-                () -> new IllegalRequestDataException("No user found"));
-        Long idUser = foundAuthUser.getId();
+    public void deleteAuthUsers(Long idUser) {
+        log.info("deleteAuthUsers");
         assert idUser != null;
         usersRepository.deleteById(idUser);
     }
@@ -144,7 +141,7 @@ public class UsersService implements UserDetailsService {
         thread.start();
     }
 
-    private Optional<Users> getUserByEmailIgnoreCase() {
+    public Optional<Users> getUserByEmailIgnoreCase() {
         log.info("getUserByEmailIgnoreCase");
         return usersRepository.findByEmailIgnoreCase(
                 SecurityContextHolder.getContext().getAuthentication().getName()
