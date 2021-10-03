@@ -14,11 +14,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,6 +31,7 @@ import static com.example.democrudjwt.util.UsersDTOUtil.createUsersDTO;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class UsersService implements UserDetailsService {
 
     private final ApplicationUserDao applicationUserDao;
@@ -46,6 +49,7 @@ public class UsersService implements UserDetailsService {
     }
 
     public Page<UsersDTO> findAll(PageRequest pageRequest) {
+        log.info("findAll");
         Page<Users> pageResponse = Optional.of(usersRepository.findAll(pageRequest))
                 .orElseThrow(() -> new IllegalRequestDataException("No users found"));
 
@@ -55,7 +59,7 @@ public class UsersService implements UserDetailsService {
     }
 
     public List<UsersDTO> getAllUsers() {
-        log.info("Get All Users UserServis");
+        log.info("getAllUsers");
         List<Users> usersList = Optional.of(usersRepository.getAllUsers())
                 .orElseThrow(() -> new IllegalRequestDataException("No user found"));
         return usersList.stream()
@@ -64,15 +68,17 @@ public class UsersService implements UserDetailsService {
     }
 
     public UsersDTO getUser(Long id) {
-        log.info("Get User UserServis");
+        log.info("getUser");
         return createUsersDTO(
                 Optional.of(usersRepository.findById(id))
                         .orElseThrow(
                                 () -> new IllegalRequestDataException("No user found")));
     }
 
+    @Modifying
+    @Transactional
     public void deleteById() {
-        log.info("Delete AuthUser UserServis");
+        log.info("deleteById");
         Users foundAuthUser = getUserByEmailIgnoreCase().orElseThrow(
                 () -> new IllegalRequestDataException("No user found"));
         Long idUser = foundAuthUser.getId();
@@ -80,8 +86,10 @@ public class UsersService implements UserDetailsService {
         usersRepository.deleteById(idUser);
     }
 
+    @Modifying
+    @Transactional
     public Users register(Users user) {
-        log.info("register new User UserServis");
+        log.info("register");
         String userName = user.getName();
         Integer age = user.getAge();
         String email = user.getEmail();
@@ -102,18 +110,10 @@ public class UsersService implements UserDetailsService {
         return saveUser;
     }
 
-    public void userAccountIncrease(Users saveUser) {
-        Runnable runnable = () -> {
-            IncreaseCash increaseCash = new IncreaseCash();
-            increaseCash.setMaxCash(saveUser.getProfiles().getCash().multiply(new BigDecimal("2.07")));
-            profilesService.incCash(saveUser, increaseCash);
-        };
-
-        Thread thread = new Thread(runnable);
-        thread.start();
-    }
-
+    @Modifying
+    @Transactional
     public Users updateUser(Users user) {
+        log.info("updateUser");
         Users foundAuthUser = getUserByEmailIgnoreCase().orElseThrow(
                 () -> new IllegalRequestDataException("No user found"));
 
@@ -132,7 +132,20 @@ public class UsersService implements UserDetailsService {
         return usersRepository.save(user);
     }
 
+    public void userAccountIncrease(Users saveUser) {
+        log.info("userAccountIncrease");
+        Runnable runnable = () -> {
+            IncreaseCash increaseCash = new IncreaseCash();
+            increaseCash.setMaxCash(saveUser.getProfiles().getCash().multiply(new BigDecimal("2.07")));
+            profilesService.increaseCash(saveUser, increaseCash);
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.start();
+    }
+
     private Optional<Users> getUserByEmailIgnoreCase() {
+        log.info("getUserByEmailIgnoreCase");
         return usersRepository.findByEmailIgnoreCase(
                 SecurityContextHolder.getContext().getAuthentication().getName()
         );
@@ -140,6 +153,7 @@ public class UsersService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("loadUserByUsername");
         return applicationUserDao
                 .selectApplicationUserByEmail(username)
                 .orElseThrow(() ->

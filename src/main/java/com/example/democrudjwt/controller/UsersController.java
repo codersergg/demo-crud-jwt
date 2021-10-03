@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.List;
 
 import static com.example.democrudjwt.util.ValidationUtil.checkNew;
+import static com.example.democrudjwt.util.ValidationUtil.checkNotFoundWithId;
 
 @RequestMapping(UsersController.URL)
 @RestController
@@ -52,23 +53,22 @@ public class UsersController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    List<UsersDTO> getAllUsers() {
-        log.info("Get All Users UserController");
+    public @ResponseBody List<UsersDTO> getAllUsers() {
+        log.info("getAllUsers");
         return usersService.getAllUsers();
     }
 
     @GetMapping(path = "{userId}")
-    public UsersDTO getUser(
-            @PathVariable("userId") Long id) {
-        log.info("Get userDTO by id {} ", id);
+    public UsersDTO getUser(@PathVariable("userId") Long id) {
+        log.info("getUser by id {} ", id);
+        checkNotFoundWithId(usersService.getUser(id), id);
         return usersService.getUser(id);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser() {
-        log.info("Delete user by id=");
+        log.info("deleteUser by id=");
         usersService.deleteById();
     }
 
@@ -77,7 +77,7 @@ public class UsersController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<Users> register(@Valid @RequestBody Users user) {
-        log.info("Register {} ", user);
+        log.info("register {} ", user);
         checkNew(user);
         user = usersService.register(user);
         URI uriOfNewResource = ServletUriComponentsBuilder
@@ -90,7 +90,7 @@ public class UsersController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, headers = HttpHeaders.AUTHORIZATION)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public Users updateUser(@Valid @RequestBody Users user) {
-        log.info("updateUser ", user);
+        log.info("updateUser {} ", user);
         return usersService.updateUser(user);
     }
 }

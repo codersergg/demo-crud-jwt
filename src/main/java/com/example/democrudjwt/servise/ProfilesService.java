@@ -16,13 +16,14 @@ import java.util.Optional;
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class ProfilesService {
 
     UsersRepository usersRepository;
     ProfilesRepository profilesRepository;
 
-    public void incCash(Users users, IncreaseCash increaseCash) {
-
+    public void increaseCash(Users users, IncreaseCash increaseCash) {
+        log.info("increaseCash {} {} ", users, increaseCash);
         assert users.getProfiles().getId() != null;
         increaseCash.setProfilesId(users.getProfiles().getId());
         Long profilesId = increaseCash.getProfilesId();
@@ -43,12 +44,15 @@ public class ProfilesService {
     }
 
     private void sleepThreadAndIncreaseCashOneStep(IncreaseCash increaseCash) throws InterruptedException {
-        Thread.sleep(20000);
+        int millis = 20000;
+        log.info("sleepThreadAndIncreaseCashOneStep {} milliseconds {} ", millis, increaseCash);
+        Thread.sleep(millis);
         increaseCashOneStep(increaseCash);
     }
 
     @Transactional
     void increaseCashOneStep(IncreaseCash increaseCash) {
+        log.info("increaseCashOneStep {} ", increaseCash);
         Optional<Profiles> profiles = profilesRepository.findById(increaseCash.getProfilesId());
 
         BigDecimal multiply = increaseCash.getStartCash().multiply(new BigDecimal("1.1"));
@@ -60,7 +64,7 @@ public class ProfilesService {
         } else {
             profiles.get().setCash(multiply);
             Profiles saveProfiles = profilesRepository.save(profiles.get());
-            incCash(saveProfiles.getUsersEmail(), increaseCash);
+            increaseCash(saveProfiles.getUsersEmail(), increaseCash);
         }
     }
 }

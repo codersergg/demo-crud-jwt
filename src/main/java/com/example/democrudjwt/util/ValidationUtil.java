@@ -15,12 +15,12 @@ public class ValidationUtil {
         }
     }
 
-    public static <T> T checkNotFoundWithId(T object, int id) {
+    public static <T> T checkNotFoundWithId(T object, long id) {
         checkNotFoundWithId(object != null, id);
         return object;
     }
 
-    public static void checkNotFoundWithId(boolean found, int id) {
+    public static void checkNotFoundWithId(boolean found, long id) {
         checkNotFound(found, "id=" + id);
     }
 
@@ -32,15 +32,6 @@ public class ValidationUtil {
     public static void checkNotFound(boolean found, String msg) {
         if (!found) {
             throw new IllegalRequestDataException("Not found entity with " + msg);
-        }
-    }
-
-    //  Conservative when you reply, but accept liberally (http://stackoverflow.com/a/32728226/548473)
-    public static void assureIdConsistent(Users entity, Long id) {
-        if (entity.isNew()) {
-            entity.setId(id);
-        } else if (!Objects.equals(entity.id(), id)) {
-            throw new IllegalRequestDataException(entity.getClass().getSimpleName() + " must has id=" + id);
         }
     }
 }
