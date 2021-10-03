@@ -8,6 +8,7 @@ import com.example.democrudjwt.util.IncreaseCash;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class ProfilesService {
 
         Runnable runnable = () -> {
             try {
-                increaseCashOneStep(increaseCash);
+                sleepThreadAndIncreaseCashOneStep(increaseCash);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -41,9 +42,13 @@ public class ProfilesService {
         thread.start();
     }
 
-    private void increaseCashOneStep(IncreaseCash increaseCash) throws InterruptedException {
-        Thread.sleep(5000);
+    private void sleepThreadAndIncreaseCashOneStep(IncreaseCash increaseCash) throws InterruptedException {
+        Thread.sleep(20000);
+        increaseCashOneStep(increaseCash);
+    }
 
+    @Transactional
+    void increaseCashOneStep(IncreaseCash increaseCash) {
         Optional<Profiles> profiles = profilesRepository.findById(increaseCash.getProfilesId());
 
         BigDecimal multiply = increaseCash.getStartCash().multiply(new BigDecimal("1.1"));
